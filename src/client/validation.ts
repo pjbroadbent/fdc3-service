@@ -10,10 +10,15 @@ import {Identity} from 'openfin/_v2/main';
 import {Context} from './context';
 import {ChannelId} from './contextChannels';
 
+interface IdentityWithEndpoint extends Identity {
+    name: string;
+    endpointId: string;
+}
+
 /**
  * Validates the provided Identity and returns an Identity stripped of any extraneous properties
  */
-export function parseIdentity(identity: Identity): Identity {
+export function parseIdentity(identity: Identity | IdentityWithEndpoint): Identity {
     let error = false;
 
     if (identity === null || typeof identity !== 'object') {
@@ -31,7 +36,11 @@ export function parseIdentity(identity: Identity): Identity {
         throw new TypeError(`${safeStringify(identity, 'The provided Identity')} is not a valid Identity`);
     }
 
-    return {uuid: identity.uuid, name: identity.name || identity.uuid};
+    if (identity.hasOwnProperty('endpointId')) {
+        return {uuid: identity.uuid, name: identity.name || identity.uuid, endpointId: (identity as IdentityWithEndpoint).endpointId} as Identity;
+    } else {
+        return {uuid: identity.uuid, name: identity.name || identity.uuid};
+    }
 }
 
 /**
