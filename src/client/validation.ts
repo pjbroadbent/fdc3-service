@@ -10,7 +10,7 @@ import {Identity} from 'openfin/_v2/main';
 import {Context} from './context';
 import {ChannelId} from './contextChannels';
 
-interface IdentityWithEndpoint extends Identity {
+export interface IdentityWithEndpoint extends Identity {
     name: string;
     endpointId: string;
 }
