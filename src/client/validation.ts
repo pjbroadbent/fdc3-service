@@ -18,7 +18,7 @@ export interface IdentityWithEndpoint extends Identity {
 /**
  * Validates the provided Identity and returns an Identity stripped of any extraneous properties
  */
-export function parseIdentity(identity: Identity | IdentityWithEndpoint): Identity {
+export function parseIdentity(identity: Identity | IdentityWithEndpoint): Identity | IdentityWithEndpoint {
     let error = false;
 
     if (identity === null || typeof identity !== 'object') {
@@ -36,7 +36,7 @@ export function parseIdentity(identity: Identity | IdentityWithEndpoint): Identi
         throw new TypeError(`${safeStringify(identity, 'The provided Identity')} is not a valid Identity`);
     }
 
-    if (identity.hasOwnProperty('endpointId')) {
+    if (identity.hasOwnProperty('endpointId') && identity.entityType === 'external connection') {
         return {uuid: identity.uuid, name: identity.name || identity.uuid, endpointId: (identity as IdentityWithEndpoint).endpointId} as Identity;
     } else {
         return {uuid: identity.uuid, name: identity.name || identity.uuid};
